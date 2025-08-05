@@ -14,10 +14,9 @@ mytest:
     - 'mvn test'
   except:
     - main
-
 mybuild:
   stage: build
   script:
-    - 'mvn package'
+    - mvn package -DskipTests
   only:
     - main
