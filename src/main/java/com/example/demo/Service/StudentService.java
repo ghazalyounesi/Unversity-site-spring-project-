@@ -12,7 +12,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
+import com.example.demo.dto.ListDto.StudentListDto;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -86,6 +86,18 @@ public class StudentService {
                 })
                 .collect(Collectors.toList());
     }
+
+    @Transactional(readOnly = true)
+    public List<StudentListDto> getStudentList() {
+        return studentRepository.findAll().stream()
+                .map(student -> {
+                    User user = userRepository.findById(student.getUserId())
+                            .orElseThrow(() -> new EntityNotFoundException("User not found for student id: " + student.getId()));
+                    return new StudentListDto(student.getId(), user.getName(), student.getStudentid());
+                })
+                .collect(Collectors.toList());
+    }
+
     @Transactional
     public void deleteStudent(Long id) {
         Student student = studentRepository.findById(id)

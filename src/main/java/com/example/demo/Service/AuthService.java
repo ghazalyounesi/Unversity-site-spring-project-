@@ -5,11 +5,14 @@ import com.example.demo.dto.Login.LoginRequest;
 import com.example.demo.dto.Login.LoginResponse;
 import com.example.demo.dto.UserRegistrationRequest;
 import com.example.demo.entity.User;
+import com.example.demo.Service.JwtService;
 import com.example.demo.Repasitory.UserRepository;
 import jakarta.persistence.EntityExistsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import java.util.HashSet;
 
@@ -18,9 +21,13 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
+        this.authenticationManager = authenticationManager;
     }
 
     @Transactional
@@ -38,25 +45,24 @@ public class AuthService {
         user.setPhone(request.getPhone());
         user.setNationalld(request.getNationalId());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setActive(false);
+        user.setActive(true);
         user.setRoles(new HashSet<>());
 
         return userRepository.save(user);
     }
 
     public LoginResponse loginUser(LoginRequest request) {
-        User user = userRepository.findByUsername(request.getUsername())
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getUsername(),
+                        request.getPassword()
+                )
+        );
+
+        var user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("User not found"));
+        String jwtToken = jwtService.generateToken(user);
 
-        if (!user.isActive()) {
-            throw new IllegalStateException("User account is not active.");
-        }
-
-        if (passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            String token = "dummy-jwt-token-for-" + user.getUsername();
-            return new LoginResponse(token, user.getUsername());
-        } else {
-            throw new IllegalArgumentException("Invalid credentials");
-        }
+        return new LoginResponse(jwtToken, user.getUsername());
     }
 }

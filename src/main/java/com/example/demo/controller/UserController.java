@@ -1,9 +1,10 @@
 package com.example.demo.controller;
 
+import com.example.demo.Service.UserService;
 import com.example.demo.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import com.example.demo.Service.UserService;
+
 import java.util.List;
 
 @RestController
@@ -11,30 +12,32 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
     @GetMapping
-    public List<User> getUsers(){
+    public List<User> getUsers() {
         return userService.getuser();
     }
+
     @PostMapping
-    public void registerUser(@RequestBody User user){
+    public void registerUser(@RequestBody User user) {
         userService.addNewUser(user);
 
     }
 
     @DeleteMapping
-    public void deleteUser(@RequestBody Long Id){
+    public void deleteUser(@RequestBody Long Id) {
         userService.deleteUsrer(Id);
 
     }
 
     @PutMapping(path = "{userId}")
-    public void updateUser(@PathVariable("userId") Long id, @RequestBody User user){
+    public void updateUser(@PathVariable("userId") Long id, @RequestBody User user) {
 
-        userService.updateuser(id,user);
+        userService.updateuser(id, user);
     }
 }

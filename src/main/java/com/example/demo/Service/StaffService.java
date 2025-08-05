@@ -1,15 +1,14 @@
 // src/main/java/com/example/demo/service/StaffService.java
 package com.example.demo.Service;
 
-import com.example.demo.dto.CreateRequest.StaffCreateRequest;
-import com.example.demo.dto.ProfileDto.StaffProfileDto;
-import com.example.demo.dto.ProfileDto.StudentProfileDto;
-import com.example.demo.dto.Update.StaffUpdateRequest;
-import com.example.demo.entity.Staff;
-import com.example.demo.entity.Student;
-import com.example.demo.entity.User;
 import com.example.demo.Repasitory.StaffRepository;
 import com.example.demo.Repasitory.UserRepository;
+import com.example.demo.dto.CreateRequest.StaffCreateRequest;
+import com.example.demo.dto.ListDto.staffListDto;
+import com.example.demo.dto.ProfileDto.StaffProfileDto;
+import com.example.demo.dto.Update.StaffUpdateRequest;
+import com.example.demo.entity.Staff;
+import com.example.demo.entity.User;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -82,6 +81,17 @@ public class StaffService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public List<staffListDto> getStaffList() {
+        return staffRepository.findAll().stream()
+                .map(staff -> {
+                    User user = userRepository.findById(staff.getUserId())
+                            .orElseThrow(() -> new EntityNotFoundException("User not found for staff id: " + staff.getId()));
+                    return new staffListDto(staff.getId(), user.getName(), staff.getPersonnelld());
+                })
+                .collect(Collectors.toList());
+
+    }
 
     @Transactional(readOnly = true)
     public StaffProfileDto getStaffById(Long id) {
@@ -92,6 +102,7 @@ public class StaffService {
         return mapToProfileDto(staff, user);
 
     }
+
     @Transactional
     public void deleteStaff(Long id) {
         Staff staff = staffRepository.findById(id)
@@ -108,6 +119,7 @@ public class StaffService {
 
         staffRepository.deleteById(id);
     }
+
     private StaffProfileDto mapToProfileDto(Staff staff, User user) {
         StaffProfileDto dto = new StaffProfileDto();
         dto.setName(user.getName());

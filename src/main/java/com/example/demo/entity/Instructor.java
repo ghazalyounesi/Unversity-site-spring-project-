@@ -15,7 +15,7 @@ public class Instructor{
     private Long id;
 
     @Column(nullable = false)
-    private Long userId; // Foreign key to User entity
+    private Long userId;
 
     public enum Rank {
         ASSISTANT, ASSOCIATE, FULL

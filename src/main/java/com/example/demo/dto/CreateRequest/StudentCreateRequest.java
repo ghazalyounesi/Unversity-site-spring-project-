@@ -9,10 +9,7 @@ import java.util.Date;
 @Getter
 @Setter
 public class StudentCreateRequest {
-    // The username of the user who will become a student
     private String username;
-
-    // Student-specific information
     private String studentId;
     private Student.Degree degree;
     private Date startDate;

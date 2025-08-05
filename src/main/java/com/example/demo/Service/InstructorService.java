@@ -14,6 +14,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.example.demo.dto.ListDto.InstructorListDto;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -111,6 +112,17 @@ public class InstructorService {
         User user = userRepository.findById(instructor.getUserId())
                 .orElseThrow(() -> new EntityNotFoundException("Associated user not found for Instructor id: " + instructor.getId()));
         return mapToProfileDto(instructor, user);
+    }
+
+    @Transactional(readOnly = true)
+    public List<InstructorListDto> getInstructorList() {
+        return instructorRepository.findAll().stream()
+                .map(instructor -> {
+                    User user = userRepository.findById(instructor.getUserId())
+                            .orElseThrow(() -> new EntityNotFoundException("User not found for instructor id: " + instructor.getId()));
+                    return new InstructorListDto(instructor.getId(), user.getName());
+                })
+                .collect(Collectors.toList());
     }
 
     private InstructorProfileDto mapToProfileDto(Instructor instructor, User user) {

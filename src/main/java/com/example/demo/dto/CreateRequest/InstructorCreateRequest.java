@@ -8,9 +8,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class InstructorCreateRequest {
-    // The username of the user who will become an instructor
     private String username;
-
-    // Instructor-specific information
     private Instructor.Rank rank;
 }

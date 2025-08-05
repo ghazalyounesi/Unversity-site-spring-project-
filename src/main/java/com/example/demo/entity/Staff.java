@@ -14,7 +14,7 @@ public class Staff {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
-    private Long userId; // Foreign key to User entity
+    private Long userId;
     @Column(name = "personnel_id", unique = true)
     private String personnelld;
     public Staff() {}

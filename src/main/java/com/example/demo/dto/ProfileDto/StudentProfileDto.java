@@ -9,7 +9,6 @@ import java.util.Date;
 @Getter
 @Setter
 public class StudentProfileDto {
-    // Combined Info
     private String name;
     private String username;
     private String phone;

@@ -8,7 +8,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class InstructorProfileDto {
-    // Combined Info
     private String name;
     private String username;
     private String phone;
