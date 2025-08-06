@@ -1,6 +1,6 @@
 package com.example.demo.dto.ListDto;
-import lombok.Data;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 

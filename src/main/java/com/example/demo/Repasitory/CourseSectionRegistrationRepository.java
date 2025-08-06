@@ -1,4 +1,3 @@
-// src/main/java/com/example/demo/repository/CourseSectionRegistrationRepository.java
 package com.example.demo.Repasitory;
 
 import com.example.demo.dto.ListDto.TermSummaryDto;

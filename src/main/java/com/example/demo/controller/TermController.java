@@ -1,5 +1,4 @@
 package com.example.demo.controller;
-// src/main/java/com/example/demo/controller/TermController.java
 
 import com.example.demo.Service.TermService;
 import com.example.demo.dto.ProfileDto.TermDto;

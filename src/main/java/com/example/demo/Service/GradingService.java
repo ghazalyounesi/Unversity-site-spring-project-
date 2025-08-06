@@ -1,15 +1,13 @@
 package com.example.demo.Service;
 
+import com.example.demo.Repasitory.CourseSectionRegistrationRepository;
 import com.example.demo.dto.ListDto.BulkGradeRequestDto;
 import com.example.demo.dto.ListDto.GradeEntryDto;
 import com.example.demo.entity.CourseSectionRegistration;
-import com.example.demo.Repasitory.CourseSectionRegistrationRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

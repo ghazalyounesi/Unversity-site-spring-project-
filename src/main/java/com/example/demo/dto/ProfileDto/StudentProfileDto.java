@@ -1,9 +1,9 @@
-// src/main/java/com/example/demo/dto/StudentProfileDto.java
 package com.example.demo.dto.ProfileDto;
 
 import com.example.demo.entity.Student;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.util.Date;
 
 @Getter

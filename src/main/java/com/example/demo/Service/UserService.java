@@ -1,7 +1,7 @@
 package com.example.demo.Service;
 
-import com.example.demo.entity.User;
 import com.example.demo.Repasitory.UserRepository;
+import com.example.demo.entity.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,7 +15,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public List<User> getuser(){
+    public List<User> getuser() {
         return userRepository.findAll();
     }
 

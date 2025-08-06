@@ -1,4 +1,3 @@
-// src/main/java/com/example/demo/controller/InstructorController.java
 package com.example.demo.controller;
 
 import com.example.demo.Service.InstructorService;
@@ -9,6 +8,7 @@ import com.example.demo.dto.Update.InstructorUpdateRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController

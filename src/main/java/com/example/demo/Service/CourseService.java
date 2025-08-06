@@ -1,11 +1,12 @@
 package com.example.demo.Service;
 
+import com.example.demo.Repasitory.CourseRepository;
 import com.example.demo.dto.ProfileDto.CourseDto;
 import com.example.demo.entity.Course;
-import com.example.demo.Repasitory.CourseRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service

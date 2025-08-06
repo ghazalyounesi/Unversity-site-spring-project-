@@ -1,4 +1,3 @@
-// src/main/java/com/example/demo/entity/Staff.java
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
@@ -17,8 +16,11 @@ public class Staff {
     private Long userId;
     @Column(name = "personnel_id", unique = true)
     private String personnelld;
-    public Staff() {}
-    public Staff(Long userId,String personnelld) {
+
+    public Staff() {
+    }
+
+    public Staff(Long userId, String personnelld) {
         this.personnelld = personnelld;
         this.userId = userId;
     }

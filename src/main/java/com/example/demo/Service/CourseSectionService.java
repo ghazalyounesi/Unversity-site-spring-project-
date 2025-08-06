@@ -2,22 +2,24 @@ package com.example.demo.Service;
 
 import com.example.demo.Repasitory.*;
 import com.example.demo.dto.CreateRequest.CourseSectionCreateDto;
+import com.example.demo.dto.ListDto.CourseSectionListDto;
+import com.example.demo.dto.ListDto.EnrolledStudentDto;
 import com.example.demo.dto.ProfileDto.CourseSectionResponseDto;
+import com.example.demo.dto.Update.CourseSectionUpdateRequestDto;
 import com.example.demo.entity.*;
+import com.example.demo.specification.CourseSectionSpecification;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
-import java.util.stream.Collectors;
-import com.example.demo.dto.Update.CourseSectionUpdateRequestDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import com.example.demo.specification.CourseSectionSpecification;
-import com.example.demo.dto.ListDto.CourseSectionListDto;
-import com.example.demo.dto.ListDto.EnrolledStudentDto;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.access.AccessDeniedException;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -34,13 +36,23 @@ public class CourseSectionService {
 
     public CourseSection createCourseSection(CourseSectionCreateDto dto) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User currentUser = userRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException("User not found"));
-        Instructor instructor = instructorRepository.findByUserId(currentUser.getId()).orElseThrow(() -> new IllegalStateException("Current user is not an instructor"));
 
-        CourseSection section = new CourseSection();
-        section.setTermId(dto.getTermId());
-        section.setCourseId(dto.getCourseId());
-        section.setInstructorId(instructor.getId());
+        User currentUser = userRepository.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with username: " + username));
+
+        Instructor instructor = instructorRepository.findByUserId(currentUser.getId())
+                .orElseThrow(() -> new AccessDeniedException("Current user is not an instructor"));
+
+        if (dto.getTermId() == null || dto.getCourseId() == null) {
+            throw new IllegalArgumentException("Term ID and Course ID must not be null");
+        }
+
+        CourseSection section = CourseSection.builder()
+                .termId(dto.getTermId())
+                .courseId(dto.getCourseId())
+                .instructorId(instructor.getId())
+                .build();
+
 
         return courseSectionRepository.save(section);
     }
@@ -142,6 +154,7 @@ public class CourseSectionService {
                 studentCount
         );
     }
+
     private CourseSectionListDto mapToListDto(CourseSection section) {
         Course course = courseRepository.findById(section.getCourseId())
                 .orElse(null);

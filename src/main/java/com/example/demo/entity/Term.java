@@ -1,4 +1,3 @@
-// src/main/java/com/example/demo/entity/Term.java
 package com.example.demo.entity;
 
 import jakarta.persistence.*;

@@ -1,10 +1,10 @@
 package com.example.demo.controller;
 
+import com.example.demo.Repasitory.*;
 import com.example.demo.dto.CreateRequest.CourseSectionCreateDto;
 import com.example.demo.dto.ListDto.GradeEntryDto;
 import com.example.demo.dto.Login.LoginRequest;
 import com.example.demo.entity.*;
-import com.example.demo.Repasitory.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,14 +31,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 class FullAcademicWorkflowIntegrationTest {
 
-    @Autowired private MockMvc mockMvc;
-    @Autowired private ObjectMapper objectMapper;
-    @Autowired private UserRepository userRepository;
-    @Autowired private InstructorRepository instructorRepository;
-    @Autowired private StudentRepository studentRepository;
-    @Autowired private TermRepository termRepository;
-    @Autowired private CourseRepository courseRepository;
-    @Autowired private PasswordEncoder passwordEncoder;
+    @Autowired
+    private MockMvc mockMvc;
+    @Autowired
+    private ObjectMapper objectMapper;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private InstructorRepository instructorRepository;
+    @Autowired
+    private StudentRepository studentRepository;
+    @Autowired
+    private TermRepository termRepository;
+    @Autowired
+    private CourseRepository courseRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     private String instructorToken;
     private String studentToken;

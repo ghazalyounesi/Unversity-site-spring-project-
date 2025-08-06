@@ -1,4 +1,3 @@
-// src/main/java/com/example/demo/entity/Instructor.java
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
@@ -9,18 +8,13 @@ import lombok.Setter;
 @Getter
 @Entity
 @Table(name = "instructor")
-public class Instructor{
+public class Instructor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
     private Long userId;
-
-    public enum Rank {
-        ASSISTANT, ASSOCIATE, FULL
-    }
-
     @Enumerated(EnumType.STRING)
     @Column(name = "rank")
     private Rank rank;
@@ -29,5 +23,11 @@ public class Instructor{
         this.rank = rank;
         this.userId = userId;
     }
-    public Instructor() {}
+
+    public Instructor() {
+    }
+
+    public enum Rank {
+        ASSISTANT, ASSOCIATE, FULL
+    }
 }

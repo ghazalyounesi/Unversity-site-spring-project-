@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.Repasitory.*;
+import com.example.demo.Service.StudentGradeService;
 import com.example.demo.dto.ListDto.CourseGradeDto;
 import com.example.demo.dto.ListDto.TermGradesDto;
 import com.example.demo.entity.*;
@@ -13,22 +14,29 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import com.example.demo.Service.StudentGradeService;
+
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class StudentGradeServiceTest {
 
-    @Mock private UserRepository userRepository;
-    @Mock private StudentRepository studentRepository;
-    @Mock private CourseSectionRepository courseSectionRepository;
-    @Mock private CourseSectionRegistrationRepository registrationRepository;
-    @Mock private CourseRepository courseRepository;
-    @Mock private InstructorRepository instructorRepository;
+    @Mock
+    private UserRepository userRepository;
+    @Mock
+    private StudentRepository studentRepository;
+    @Mock
+    private CourseSectionRepository courseSectionRepository;
+    @Mock
+    private CourseSectionRegistrationRepository registrationRepository;
+    @Mock
+    private CourseRepository courseRepository;
+    @Mock
+    private InstructorRepository instructorRepository;
 
     @InjectMocks
     private StudentGradeService studentGradeService;
@@ -47,22 +55,18 @@ class StudentGradeServiceTest {
 
     @Test
     void testGetTermGrades_returnsCorrectGpaAndCourseList() {
-        // داده‌ها
         Long termId = 100L;
         Long studentId = 10L;
         Long userId = 1L;
 
-        // User
         User user = new User();
         user.setId(userId);
         user.setUsername("student1");
 
-        // Student
         Student student = new Student();
         student.setId(studentId);
         student.setUserId(userId);
 
-        // Course 1
         Course course1 = new Course();
         course1.setId(1L);
         course1.setUnits(3);
@@ -86,11 +90,11 @@ class StudentGradeServiceTest {
         instructorUser1.setId(301L);
         instructorUser1.setName("Dr. Smith");
 
-        // Course 2
         Course course2 = new Course();
         course2.setId(2L);
         course2.setUnits(2);
         course2.setTitle("Physics");
+
 
         CourseSection section2 = new CourseSection();
         section2.setId(12L);
@@ -110,7 +114,6 @@ class StudentGradeServiceTest {
         instructorUser2.setId(302L);
         instructorUser2.setName("Dr. Johnson");
 
-        // Mock رفتار repositoryها
         when(userRepository.findByUsername("student1")).thenReturn(Optional.of(user));
         when(studentRepository.findByUserId(userId)).thenReturn(Optional.of(student));
         when(courseSectionRepository.findAllByTermId(termId)).thenReturn(List.of(section1, section2));
@@ -125,14 +128,12 @@ class StudentGradeServiceTest {
         when(userRepository.findById(301L)).thenReturn(Optional.of(instructorUser1));
         when(userRepository.findById(302L)).thenReturn(Optional.of(instructorUser2));
 
-        // اجرا
+
         TermGradesDto result = studentGradeService.getTermGrades(termId);
 
-        // بررسی
         assertNotNull(result);
         assertEquals(2, result.getCourses().size());
 
-        // محاسبه GPA = (18*3 + 16*2) / (3+2) = (54 + 32) / 5 = 17.2
         assertEquals(17.2, result.getTermGpa(), 0.01);
 
         CourseGradeDto course1Grade = result.getCourses().get(0);

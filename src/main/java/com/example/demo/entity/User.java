@@ -1,22 +1,25 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Collection;
-import java.util.stream.Collectors;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+@Builder
 @Setter
 @Getter
 @Entity
 @Table(name = "app_user")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class User implements UserDetails{
+public class User implements UserDetails {
     @Id
     @SequenceGenerator(
             name = "user_sequence",
@@ -24,8 +27,8 @@ public class User implements UserDetails{
             allocationSize = 1
     )
     @GeneratedValue(
-         strategy = GenerationType.SEQUENCE,
-         generator =  "user_sequence"
+            strategy = GenerationType.SEQUENCE,
+            generator = "user_sequence"
 
     )
     private long id;
@@ -87,18 +90,33 @@ public class User implements UserDetails{
         this.admin = admin;
         this.active = active;
     }
+
+    public User(long id, String username, String password, String name, String phone, String nationalld, boolean admin, boolean active, Set<String> roles) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.name = name;
+        this.phone = phone;
+        this.nationalld = nationalld;
+        this.admin = admin;
+        this.active = active;
+        this.roles = roles != null ? roles : new HashSet<>();
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.roles.stream()
                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
                 .collect(Collectors.toList());
     }
+
     public Set<String> getRoles() {
         if (roles == null) {
             roles = new HashSet<>();
         }
         return roles;
     }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;

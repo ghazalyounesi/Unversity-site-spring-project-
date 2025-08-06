@@ -1,16 +1,15 @@
-// src/main/java/com/example/demo/service/StudentGradeService.java
 package com.example.demo.Service;
 
+import com.example.demo.Repasitory.*;
+import com.example.demo.dto.ListDto.AcademicSummaryDto;
 import com.example.demo.dto.ListDto.CourseGradeDto;
 import com.example.demo.dto.ListDto.TermGradesDto;
+import com.example.demo.dto.ListDto.TermSummaryDto;
 import com.example.demo.entity.*;
-import com.example.demo.Repasitory.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import com.example.demo.dto.ListDto.AcademicSummaryDto;
-import com.example.demo.dto.ListDto.TermSummaryDto;
 
 import java.util.ArrayList;
 import java.util.List;

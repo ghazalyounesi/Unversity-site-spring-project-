@@ -1,4 +1,3 @@
-// src/main/java/com/example/demo/dto/InstructorProfileDto.java
 package com.example.demo.dto.ProfileDto;
 
 import com.example.demo.entity.Instructor;

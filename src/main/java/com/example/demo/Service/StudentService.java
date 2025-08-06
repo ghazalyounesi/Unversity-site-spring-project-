@@ -1,18 +1,17 @@
-// src/main/java/com/example/demo/service/StudentService.java
 package com.example.demo.Service;
 
+import com.example.demo.Repasitory.StudentRepository;
+import com.example.demo.Repasitory.UserRepository;
 import com.example.demo.dto.CreateRequest.StudentCreateRequest;
+import com.example.demo.dto.ListDto.StudentListDto;
 import com.example.demo.dto.ProfileDto.StudentProfileDto;
 import com.example.demo.dto.Update.StudentUpdateRequest;
 import com.example.demo.entity.Student;
 import com.example.demo.entity.User;
-import com.example.demo.Repasitory.StudentRepository;
-import com.example.demo.Repasitory.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import com.example.demo.dto.ListDto.StudentListDto;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,6 +47,7 @@ public class StudentService {
 
         return mapToProfileDto(savedStudent, user);
     }
+
     @Transactional
     public StudentProfileDto updateStudent(Long id, StudentUpdateRequest request) {
         Student student = studentRepository.findById(id)

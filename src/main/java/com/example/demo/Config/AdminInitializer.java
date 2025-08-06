@@ -1,15 +1,18 @@
-// src/main/java/com/example/demo/AdminInitializer.java
-package com.example.demo;
+package com.example.demo.Config;
 
-import com.example.demo.entity.User;
 import com.example.demo.Repasitory.UserRepository;
+import com.example.demo.entity.User;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import jakarta.transaction.Transactional;
+
 import java.util.Set;
+
+@Slf4j
 
 @Component
 @RequiredArgsConstructor
@@ -27,7 +30,7 @@ public class AdminInitializer implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) throws Exception {
-        if (!userRepository.findByUsername(adminUsername).isPresent()) {
+        userRepository.findByUsername(adminUsername).ifPresentOrElse(admin -> log.info("admin is already registered {}", admin), () -> {
             User adminUser = new User();
             adminUser.setUsername(adminUsername);
             adminUser.setPassword(passwordEncoder.encode(adminPassword));
@@ -38,7 +41,8 @@ public class AdminInitializer implements CommandLineRunner {
             adminUser.setActive(true);
 
             userRepository.save(adminUser);
-            System.out.println(">>>> Admin user created successfully!");
-        }
+            log.info(">>>> Admin user created successfully!");
+        });
     }
+
 }

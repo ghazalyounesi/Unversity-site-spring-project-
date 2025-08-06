@@ -1,20 +1,17 @@
-// src/main/java/com/example/demo/service/InstructorService.java
 package com.example.demo.Service;
 
-import com.example.demo.dto.CreateRequest.InstructorCreateRequest;
-import com.example.demo.dto.ProfileDto.InstructorProfileDto;
-import com.example.demo.dto.ProfileDto.StudentProfileDto;
-import com.example.demo.dto.Update.InstructorUpdateRequest;
-import com.example.demo.entity.Instructor;
-import com.example.demo.entity.Student;
-import com.example.demo.entity.User;
 import com.example.demo.Repasitory.InstructorRepository;
 import com.example.demo.Repasitory.UserRepository;
+import com.example.demo.dto.CreateRequest.InstructorCreateRequest;
+import com.example.demo.dto.ListDto.InstructorListDto;
+import com.example.demo.dto.ProfileDto.InstructorProfileDto;
+import com.example.demo.dto.Update.InstructorUpdateRequest;
+import com.example.demo.entity.Instructor;
+import com.example.demo.entity.User;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.example.demo.dto.ListDto.InstructorListDto;
 
 import java.util.List;
 import java.util.stream.Collectors;

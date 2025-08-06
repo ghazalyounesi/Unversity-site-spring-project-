@@ -1,4 +1,3 @@
-// src/main/java/com/example/demo/dto/StaffCreateRequest.java
 package com.example.demo.dto.CreateRequest;
 
 import lombok.Getter;

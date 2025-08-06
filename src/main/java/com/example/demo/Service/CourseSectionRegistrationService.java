@@ -1,12 +1,12 @@
 package com.example.demo.Service;
 
+import com.example.demo.Repasitory.CourseSectionRegistrationRepository;
+import com.example.demo.Repasitory.StudentRepository;
+import com.example.demo.Repasitory.UserRepository;
 import com.example.demo.dto.CreateRequest.CourseSectionRegistrationRequestDto;
 import com.example.demo.entity.CourseSectionRegistration;
 import com.example.demo.entity.Student;
 import com.example.demo.entity.User;
-import com.example.demo.Repasitory.CourseSectionRegistrationRepository;
-import com.example.demo.Repasitory.StudentRepository;
-import com.example.demo.Repasitory.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;

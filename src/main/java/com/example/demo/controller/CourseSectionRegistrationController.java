@@ -1,4 +1,3 @@
-// src/main/java/com/example/demo/controller/CourseSectionRegistrationController.java
 package com.example.demo.controller;
 
 import com.example.demo.Service.CourseSectionRegistrationService;

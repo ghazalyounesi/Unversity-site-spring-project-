@@ -1,4 +1,3 @@
-// src/main/java/com/example/demo/dto/UserRegistrationRequest.java
 package com.example.demo.dto;
 
 import lombok.Getter;
