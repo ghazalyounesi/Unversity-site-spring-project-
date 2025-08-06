@@ -1,16 +1,16 @@
-image: jelastic/maven:3.9.5-openjdk-21
+image: maven:3.9.6-eclipse-temurin-21
 
 services:
   - name: postgres:15
     alias: db
 
 variables:
-  POSTGRES_DB: mydb
-  POSTGRES_USER: myuser
-  POSTGRES_PASSWORD: mypass
   SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/mydb
   SPRING_DATASOURCE_USERNAME: myuser
   SPRING_DATASOURCE_PASSWORD: mypass
+  POSTGRES_DB: mydb
+  POSTGRES_USER: myuser
+  POSTGRES_PASSWORD: mypass
 
 cache:
   paths:
@@ -20,18 +20,12 @@ stages:
   - test
   - build
 
-mytest:
+test:
   stage: test
   script:
-    - echo "Waiting for PostgreSQL to be ready..."
-    - until pg_isready -h db -p 5432; do sleep 1; done
     - mvn test
-  except:
-    - main
 
-mybuild:
+build:
   stage: build
   script:
     - mvn package -DskipTests
-  only:
-    - main
