@@ -1,3 +1,4 @@
+
 version: '3.8'
 
 services:
@@ -30,6 +31,7 @@ services:
       - db
     networks:
       - mynetwork
+    entrypoint: ["/wait-for-it.sh", "db:5432", "--", "java", "-jar", "app.jar"]
 
 volumes:
   pgdata:
