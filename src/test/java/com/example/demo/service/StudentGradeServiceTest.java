@@ -1,16 +1,16 @@
 package com.example.demo.service;
 
 import com.example.demo.Repasitory.*;
-import com.example.demo.Service.StudentGradeService;
 import com.example.demo.dto.ListDto.CourseGradeDto;
 import com.example.demo.dto.ListDto.TermGradesDto;
+import com.example.demo.Service.StudentGradeService;
+
 import com.example.demo.entity.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,27 +18,27 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class StudentGradeServiceTest {
 
-    @Mock
+    @MockitoBean
     private UserRepository userRepository;
-    @Mock
+    @MockitoBean
     private StudentRepository studentRepository;
-    @Mock
+    @MockitoBean
     private CourseSectionRepository courseSectionRepository;
-    @Mock
+    @MockitoBean
     private CourseSectionRegistrationRepository registrationRepository;
-    @Mock
+    @MockitoBean
     private CourseRepository courseRepository;
-    @Mock
+    @MockitoBean
     private InstructorRepository instructorRepository;
 
-    @InjectMocks
+    @Autowired
     private StudentGradeService studentGradeService;
 
     @BeforeEach
@@ -47,7 +47,6 @@ class StudentGradeServiceTest {
         mockUser.setId(1L);
         mockUser.setUsername("student1");
 
-        // ست کردن SecurityContext
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         context.setAuthentication(new UsernamePasswordAuthenticationToken(mockUser.getUsername(), null));
         SecurityContextHolder.setContext(context);
@@ -95,7 +94,6 @@ class StudentGradeServiceTest {
         course2.setUnits(2);
         course2.setTitle("Physics");
 
-
         CourseSection section2 = new CourseSection();
         section2.setId(12L);
         section2.setCourseId(2L);
@@ -128,12 +126,10 @@ class StudentGradeServiceTest {
         when(userRepository.findById(301L)).thenReturn(Optional.of(instructorUser1));
         when(userRepository.findById(302L)).thenReturn(Optional.of(instructorUser2));
 
-
         TermGradesDto result = studentGradeService.getTermGrades(termId);
 
         assertNotNull(result);
         assertEquals(2, result.getCourses().size());
-
         assertEquals(17.2, result.getTermGpa(), 0.01);
 
         CourseGradeDto course1Grade = result.getCourses().get(0);

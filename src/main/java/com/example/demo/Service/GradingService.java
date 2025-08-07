@@ -26,8 +26,8 @@ public class GradingService {
 
     @Transactional
     public void gradeStudentsBulk(Long courseSectionId, BulkGradeRequestDto request) {
-        for (GradeEntryDto gradeEntry : request.getGrades()) {
-            gradeStudent(courseSectionId, gradeEntry.getStudentId(), gradeEntry.getScore());
-        }
+        request.getGrades().forEach(gradeEntry ->
+                gradeStudent(courseSectionId, gradeEntry.getStudentId(), gradeEntry.getScore())
+        );
     }
 }

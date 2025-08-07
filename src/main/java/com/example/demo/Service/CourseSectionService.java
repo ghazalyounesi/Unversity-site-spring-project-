@@ -7,16 +7,14 @@ import com.example.demo.dto.ListDto.EnrolledStudentDto;
 import com.example.demo.dto.ProfileDto.CourseSectionResponseDto;
 import com.example.demo.dto.Update.CourseSectionUpdateRequestDto;
 import com.example.demo.entity.*;
-import com.example.demo.specification.CourseSectionSpecification;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.security.access.AccessDeniedException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -66,42 +64,21 @@ public class CourseSectionService {
         return mapToResponseDto(section, studentCount);
     }
 
+    @Transactional
     public void deleteCourseSection(Long id) {
-        if (registrationRepository.countByCourseSectionId(id) > 0) {
-            throw new IllegalStateException("Cannot delete course section with registered students.");
+        int deletedCount = courseSectionRepository.deleteCourseSectionIfNoRegistrations(id);
+        if (deletedCount == 0) {
+            throw new IllegalStateException("Cannot delete course section with registered students or it does not exist.");
         }
-        courseSectionRepository.deleteById(id);
     }
 
     public Page<CourseSectionListDto> getAllCourseSections(Long termId, String courseTitle, String instructorName, Pageable pageable) {
-
-        Specification<CourseSection> spec = CourseSectionSpecification.hasTermId(termId);
-
-        if (courseTitle != null && !courseTitle.isEmpty()) {
-            List<Long> courseIds = courseRepository.findByTitleContainingIgnoreCase(courseTitle)
-                    .stream()
-                    .map(Course::getId)
-                    .collect(Collectors.toList());
-            if (courseIds.isEmpty()) return Page.empty();
-            spec = spec.and(CourseSectionSpecification.hasCourseIds(courseIds));
-        }
-
-        if (instructorName != null && !instructorName.isEmpty()) {
-            List<Long> userIds = userRepository.findByNameContainingIgnoreCase(instructorName)
-                    .stream()
-                    .map(User::getId)
-                    .collect(Collectors.toList());
-            if (userIds.isEmpty()) return Page.empty();
-
-            List<Long> instructorIds = instructorRepository.findAllByUserIdIn(userIds)
-                    .stream()
-                    .map(Instructor::getId)
-                    .collect(Collectors.toList());
-            if (instructorIds.isEmpty()) return Page.empty();
-            spec = spec.and(CourseSectionSpecification.hasInstructorIds(instructorIds));
-        }
-
-        Page<CourseSection> sectionsPage = courseSectionRepository.findAll(spec, pageable);
+        Page<CourseSection> sectionsPage = courseSectionRepository.findByFilters(
+                termId,
+                (courseTitle != null && !courseTitle.isEmpty()) ? courseTitle : null,
+                (instructorName != null && !instructorName.isEmpty()) ? instructorName : null,
+                pageable
+        );
         return sectionsPage.map(this::mapToListDto);
     }
 
@@ -120,6 +97,7 @@ public class CourseSectionService {
         long studentCount = registrationRepository.countByCourseSectionId(updatedSection.getId());
         return mapToResponseDto(updatedSection, studentCount);
     }
+
 
     public List<EnrolledStudentDto> getEnrolledStudents(Long courseSectionId) {
         List<CourseSectionRegistration> registrations = registrationRepository.findByCourseSectionId(courseSectionId);
@@ -156,19 +134,20 @@ public class CourseSectionService {
     }
 
     private CourseSectionListDto mapToListDto(CourseSection section) {
-        Course course = courseRepository.findById(section.getCourseId())
-                .orElse(null);
-        Instructor instructor = instructorRepository.findById(section.getInstructorId())
-                .orElse(null);
-        User instructorUser = null;
-        if (instructor != null) {
-            instructorUser = userRepository.findById(instructor.getUserId())
-                    .orElse(null);
-        }
+        String courseTitle = courseRepository.findById(section.getCourseId())
+                .map(Course::getTitle)
+                .orElse("N/A");
+
+        String instructorName = instructorRepository.findById(section.getInstructorId())
+                .flatMap(instructor -> userRepository.findById(instructor.getUserId()))
+                .map(User::getName)
+                .orElse("N/A");
+
         return new CourseSectionListDto(
                 section.getId(),
-                course != null ? course.getTitle() : "N/A",
-                instructorUser != null ? instructorUser.getName() : "N/A"
+                courseTitle,
+                instructorName
         );
     }
+
 }
