@@ -1,7 +1,7 @@
 package com.example.demo.Config;
 
-import com.example.demo.Repasitory.UserRepository;
-import com.example.demo.entity.User;
+import com.example.demo.Repository.UserRepository;
+import com.example.demo.model.entity.User;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -29,21 +29,23 @@ public class AdminInitializer {
     @PostConstruct
     @Transactional
     public void initAdmin() {
-        userRepository.findByUsername(adminUsername).ifPresentOrElse(admin ->
-                        log.info("admin is already registered {}", admin),
+        userRepository.findByUsername(adminUsername).ifPresentOrElse(
+                admin -> log.info("admin is already registered {}", admin),
                 () -> {
-                    User adminUser = new User();
-                    adminUser.setUsername(adminUsername);
-                    adminUser.setPassword(passwordEncoder.encode(adminPassword));
-                    adminUser.setName("Admin");
-                    adminUser.setPhone("0000000000");
-                    adminUser.setNationalld("0000000000");
-                    adminUser.setRoles(Set.of("ADMIN"));
-                    adminUser.setActive(true);
+                    User adminUser = User.builder()
+                            .username(adminUsername)
+                            .password(passwordEncoder.encode(adminPassword))
+                            .name("Admin")
+                            .phone("0000000000")
+                            .nationalld("0000000000")
+                            .roles(Set.of("ADMIN"))
+                            .active(true)
+                            .build();
 
                     userRepository.save(adminUser);
                     log.info(">>>> Admin user created successfully!");
                 }
         );
     }
+
 }

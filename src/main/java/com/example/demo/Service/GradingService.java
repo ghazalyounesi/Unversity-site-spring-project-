@@ -1,9 +1,8 @@
 package com.example.demo.Service;
 
-import com.example.demo.Repasitory.CourseSectionRegistrationRepository;
-import com.example.demo.dto.ListDto.BulkGradeRequestDto;
-import com.example.demo.dto.ListDto.GradeEntryDto;
-import com.example.demo.entity.CourseSectionRegistration;
+import com.example.demo.Repository.CourseSectionRegistrationRepository;
+import com.example.demo.model.dto.ListDto.BulkGradeRequestDto;
+import com.example.demo.model.entity.CourseSectionRegistration;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -1,13 +1,14 @@
 package com.example.demo.Service;
 
-import com.example.demo.Repasitory.CourseSectionRegistrationRepository;
-import com.example.demo.Repasitory.StudentRepository;
-import com.example.demo.Repasitory.UserRepository;
-import com.example.demo.dto.CreateRequest.CourseSectionRegistrationRequestDto;
-import com.example.demo.entity.CourseSectionRegistration;
-import com.example.demo.entity.Student;
-import com.example.demo.entity.User;
-import jakarta.persistence.EntityNotFoundException;
+import com.example.demo.Repository.CourseSectionRegistrationRepository;
+import com.example.demo.Repository.StudentRepository;
+import com.example.demo.Repository.UserRepository;
+import com.example.demo.model.dto.CreateRequest.CourseSectionRegistrationRequestDto;
+import com.example.demo.model.entity.CourseSectionRegistration;
+import com.example.demo.model.entity.Student;
+import com.example.demo.model.entity.User;
+import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.exception.UnauthorizedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -22,20 +23,20 @@ public class CourseSectionRegistrationService {
 
     public CourseSectionRegistration createRegistration(CourseSectionRegistrationRequestDto request) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
         User currentUser = userRepository.findByUsername(username)
-                .orElseThrow(() -> new EntityNotFoundException("Current user not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Current user not found"));
 
         Student student = studentRepository.findByUserId(currentUser.getId())
-                .orElseThrow(() -> new IllegalStateException("The current user is not a student."));
+                .orElseThrow(() -> new UnauthorizedException("The current user is not a student."));
 
         boolean alreadyEnrolled = registrationRepository.existsByStudentIdAndCourseSectionId(student.getId(), request.getCourseSectionId());
         if (alreadyEnrolled) {
             throw new IllegalStateException("Student is already enrolled in this course section.");
         }
 
-        CourseSectionRegistration registration = new CourseSectionRegistration();
-        registration.setStudentId(student.getId());
-        registration.setCourseSectionId(request.getCourseSectionId());
+        CourseSectionRegistration registration =
+                CourseSectionRegistration.of(student.getId(), request.getCourseSectionId());
 
         return registrationRepository.save(registration);
     }

@@ -1,12 +1,12 @@
 package com.example.demo.Service;
 
-import com.example.demo.Repasitory.*;
-import com.example.demo.dto.CreateRequest.CourseSectionCreateDto;
-import com.example.demo.dto.ListDto.CourseSectionListDto;
-import com.example.demo.dto.ListDto.EnrolledStudentDto;
-import com.example.demo.dto.ProfileDto.CourseSectionResponseDto;
-import com.example.demo.dto.Update.CourseSectionUpdateRequestDto;
-import com.example.demo.entity.*;
+import com.example.demo.Repository.*;
+import com.example.demo.model.dto.CreateRequest.CourseSectionCreateDto;
+import com.example.demo.model.dto.ListDto.CourseSectionListDto;
+import com.example.demo.model.dto.ListDto.EnrolledStudentDto;
+import com.example.demo.model.dto.ProfileDto.CourseSectionResponseDto;
+import com.example.demo.model.dto.Update.CourseSectionUpdateRequestDto;
+import com.example.demo.model.entity.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

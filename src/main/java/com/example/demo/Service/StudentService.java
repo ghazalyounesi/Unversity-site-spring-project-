@@ -1,13 +1,13 @@
 package com.example.demo.Service;
 
-import com.example.demo.Repasitory.StudentRepository;
-import com.example.demo.Repasitory.UserRepository;
-import com.example.demo.dto.CreateRequest.StudentCreateRequest;
-import com.example.demo.dto.ListDto.StudentListDto;
-import com.example.demo.dto.ProfileDto.StudentProfileDto;
-import com.example.demo.dto.Update.StudentUpdateRequest;
-import com.example.demo.entity.Student;
-import com.example.demo.entity.User;
+import com.example.demo.Repository.StudentRepository;
+import com.example.demo.Repository.UserRepository;
+import com.example.demo.model.dto.CreateRequest.StudentCreateRequest;
+import com.example.demo.model.dto.ListDto.StudentListDto;
+import com.example.demo.model.dto.ProfileDto.StudentProfileDto;
+import com.example.demo.model.dto.Update.StudentUpdateRequest;
+import com.example.demo.model.entity.Student;
+import com.example.demo.model.entity.User;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -125,13 +125,13 @@ public class StudentService {
     }
 
     private StudentProfileDto mapToProfileDto(Student student, User user) {
-        StudentProfileDto dto = new StudentProfileDto();
-        dto.setName(user.getName());
-        dto.setUsername(user.getUsername());
-        dto.setPhone(user.getPhone());
-        dto.setStudentId(student.getStudentid());
-        dto.setDegree(student.getDegree());
-        dto.setStartDate(student.getStartDate());
-        return dto;
+        return StudentProfileDto.builder()
+                .name(user.getName())
+                .username(user.getUsername())
+                .phone(user.getPhone())
+                .studentId(student.getStudentid())
+                .degree(student.getDegree())
+                .startDate(student.getStartDate())
+                .build();
     }
 }

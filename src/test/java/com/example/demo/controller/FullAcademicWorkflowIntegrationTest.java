@@ -1,10 +1,10 @@
 package com.example.demo.controller;
 
-import com.example.demo.Repasitory.*;
-import com.example.demo.dto.CreateRequest.CourseSectionCreateDto;
-import com.example.demo.dto.ListDto.GradeEntryDto;
-import com.example.demo.dto.Login.LoginRequest;
-import com.example.demo.entity.*;
+import com.example.demo.Repository.*;
+import com.example.demo.model.dto.CreateRequest.CourseSectionCreateDto;
+import com.example.demo.model.dto.ListDto.GradeEntryDto;
+import com.example.demo.model.dto.Login.LoginRequest;
+import com.example.demo.model.entity.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -70,10 +70,11 @@ class FullAcademicWorkflowIntegrationTest {
 
     @Test
     void testFullEnrollGradeAndViewWorkflow() throws Exception {
-        // استاد یک گروه درسی تعریف می‌کند
-        CourseSectionCreateDto createSectionDto = new CourseSectionCreateDto();
-        createSectionDto.setTermId(term.getId());
-        createSectionDto.setCourseId(course.getId());
+        CourseSectionCreateDto createSectionDto = CourseSectionCreateDto.builder()
+                .termId(term.getId())
+                .courseId(course.getId())
+                .build();
+
 
         MvcResult createSectionResult = mockMvc.perform(post("/api/v1/course-sections")
                         .header("Authorization", "Bearer " + instructorToken)
@@ -85,7 +86,6 @@ class FullAcademicWorkflowIntegrationTest {
         JsonNode sectionJson = objectMapper.readTree(createSectionResult.getResponse().getContentAsString());
         long courseSectionId = sectionJson.get("id").asLong();
 
-        // دانشجو در آن گروه ثبت‌نام می‌کند
         String enrollmentRequestBody = String.format("{\"courseSectionId\": %d}", courseSectionId);
         mockMvc.perform(post("/api/v1/registrations")
                         .header("Authorization", "Bearer " + studentToken)
@@ -93,8 +93,7 @@ class FullAcademicWorkflowIntegrationTest {
                         .content(enrollmentRequestBody))
                 .andExpect(status().isOk());
 
-        // استاد به دانشجو نمره می‌دهد
-        GradeEntryDto gradeDto = new GradeEntryDto();
+        GradeEntryDto gradeDto = GradeEntryDto.of(student.getId(), 19.5);
         gradeDto.setStudentId(student.getId());
         gradeDto.setScore(19.5);
 
@@ -104,7 +103,6 @@ class FullAcademicWorkflowIntegrationTest {
                         .content(objectMapper.writeValueAsString(gradeDto)))
                 .andExpect(status().isOk());
 
-        // دانشجو نمرات ترم را می‌بیند
         mockMvc.perform(get("/api/v1/student/grades/term/{id}", term.getId())
                         .header("Authorization", "Bearer " + studentToken))
                 .andExpect(status().isOk())
@@ -113,12 +111,9 @@ class FullAcademicWorkflowIntegrationTest {
                 .andExpect(jsonPath("$.courses[0].score", is(19.5)));
     }
 
-    // ---------------- Helper Methods ----------------
 
     private String loginAndGetToken(String username, String password) throws Exception {
-        LoginRequest loginRequest = new LoginRequest();
-        loginRequest.setUsername(username);
-        loginRequest.setPassword(password);
+        LoginRequest loginRequest = LoginRequest.of(username, password);
 
         MvcResult result = mockMvc.perform(post("/api/v1/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -132,43 +127,43 @@ class FullAcademicWorkflowIntegrationTest {
     }
 
     private User createUser(String username, String name, String role) {
-        User user = new User();
-        user.setUsername(username);
-        user.setName(name);
-        user.setPassword(passwordEncoder.encode("password123"));
-        user.setPhone(username + "@example.com");
-        user.setNationalld(String.valueOf(System.nanoTime()));
-        user.setActive(true);
-        user.setRoles(Set.of(role));
+        User user = User.builder()
+                .username(username)
+                .name(name)
+                .password(passwordEncoder.encode("password123"))
+                .phone(username + "@example.com")
+                .nationalld(String.valueOf(System.nanoTime()))
+                .active(true)
+                .roles(Set.of(role))
+                .build();
+
         return userRepository.save(user);
     }
 
+
     private Instructor createInstructor(User user) {
-        Instructor i = new Instructor();
-        i.setUserId(user.getId());
-        i.setRank(Instructor.Rank.ASSISTANT);
-        return instructorRepository.save(i);
+        Instructor instructor = Instructor.createAssistantInstructor(user);
+        return instructorRepository.save(instructor);
     }
+
 
     private Student createStudent(User user, String studentCode) {
-        Student s = new Student();
-        s.setUserId(user.getId());
-        s.setStudentid(studentCode);
-        s.setDegree(Student.Degree.BS);
-        return studentRepository.save(s);
+        Student student = Student.builder()
+                .userId(user.getId())
+                .studentid(studentCode)
+                .degree(Student.Degree.BS)
+                .build();
+        return studentRepository.save(student);
     }
 
+
     private Term createTerm(String title) {
-        Term t = new Term();
-        t.setTitle(title);
-        t.setOpen(true);
+        Term t = Term.createOpenTerm("Fall 2025");
         return termRepository.save(t);
     }
 
     private Course createCourse(String title, int units) {
-        Course c = new Course();
-        c.setTitle(title);
-        c.setUnits(units);
+        Course c = Course.createCourse(title, units);
         return courseRepository.save(c);
     }
 }

@@ -1,11 +1,11 @@
 package com.example.demo.service;
 
-import com.example.demo.Repasitory.*;
-import com.example.demo.dto.ListDto.CourseGradeDto;
-import com.example.demo.dto.ListDto.TermGradesDto;
+import com.example.demo.Repository.*;
+import com.example.demo.model.dto.ListDto.CourseGradeDto;
+import com.example.demo.model.dto.ListDto.TermGradesDto;
 import com.example.demo.Service.StudentGradeService;
 
-import com.example.demo.entity.*;
+import com.example.demo.model.entity.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,6 @@
 package com.example.demo.specification;
 
-import com.example.demo.entity.CourseSection;
+import com.example.demo.model.entity.CourseSection;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;

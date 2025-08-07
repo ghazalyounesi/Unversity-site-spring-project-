@@ -1,11 +1,8 @@
 package com.example.demo.Service;
 
-import com.example.demo.Repasitory.CourseSectionRepository;
-import com.example.demo.Repasitory.InstructorRepository;
-import com.example.demo.Repasitory.UserRepository;
-import com.example.demo.entity.CourseSection;
-import com.example.demo.entity.Instructor;
-import com.example.demo.entity.User;
+import com.example.demo.Repository.CourseSectionRepository;
+import com.example.demo.Repository.InstructorRepository;
+import com.example.demo.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;

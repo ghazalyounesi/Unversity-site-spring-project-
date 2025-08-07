@@ -1,13 +1,13 @@
 package com.example.demo.Service;
 
-import com.example.demo.Repasitory.InstructorRepository;
-import com.example.demo.Repasitory.UserRepository;
-import com.example.demo.dto.CreateRequest.InstructorCreateRequest;
-import com.example.demo.dto.ListDto.InstructorListDto;
-import com.example.demo.dto.ProfileDto.InstructorProfileDto;
-import com.example.demo.dto.Update.InstructorUpdateRequest;
-import com.example.demo.entity.Instructor;
-import com.example.demo.entity.User;
+import com.example.demo.Repository.InstructorRepository;
+import com.example.demo.Repository.UserRepository;
+import com.example.demo.model.dto.CreateRequest.InstructorCreateRequest;
+import com.example.demo.model.dto.ListDto.InstructorListDto;
+import com.example.demo.model.dto.ProfileDto.InstructorProfileDto;
+import com.example.demo.model.dto.Update.InstructorUpdateRequest;
+import com.example.demo.model.entity.Instructor;
+import com.example.demo.model.entity.User;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -33,10 +33,11 @@ public class InstructorService {
     public InstructorProfileDto createInstructor(InstructorCreateRequest request) {
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new EntityNotFoundException("User not found with username: " + request.getUsername()));
+        Instructor instructor = Instructor.builder()
+                .userId(user.getId())
+                .rank(request.getRank())
+                .build();
 
-        Instructor instructor = new Instructor();
-        instructor.setUserId(user.getId());
-        instructor.setRank(request.getRank());
         Instructor savedInstructor = instructorRepository.save(instructor);
 
         user.getRoles().add("INSTRUCTOR");
@@ -123,11 +124,11 @@ public class InstructorService {
     }
 
     private InstructorProfileDto mapToProfileDto(Instructor instructor, User user) {
-        InstructorProfileDto dto = new InstructorProfileDto();
-        dto.setName(user.getName());
-        dto.setUsername(user.getUsername());
-        dto.setPhone(user.getPhone());
-        dto.setRank(instructor.getRank());
-        return dto;
+        return InstructorProfileDto.builder()
+                .name(user.getName())
+                .username(user.getUsername())
+                .phone(user.getPhone())
+                .rank(instructor.getRank())
+                .build();
     }
 }

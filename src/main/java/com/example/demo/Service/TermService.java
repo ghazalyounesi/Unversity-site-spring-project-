@@ -1,8 +1,8 @@
 package com.example.demo.Service;
 
-import com.example.demo.Repasitory.TermRepository;
-import com.example.demo.dto.ProfileDto.TermDto;
-import com.example.demo.entity.Term;
+import com.example.demo.Repository.TermRepository;
+import com.example.demo.model.dto.ProfileDto.TermDto;
+import com.example.demo.model.entity.Term;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,11 +16,14 @@ public class TermService {
     private final TermRepository termRepository;
 
     public Term createTerm(TermDto dto) {
-        Term term = new Term();
-        term.setTitle(dto.getTitle());
-        term.setOpen(dto.isOpen());
+        Term term = Term.builder()
+                .title(dto.getTitle())
+                .open(dto.isOpen())
+                .build();
+
         return termRepository.save(term);
     }
+
 
     public List<Term> getAllTerms() {
         return termRepository.findAll();

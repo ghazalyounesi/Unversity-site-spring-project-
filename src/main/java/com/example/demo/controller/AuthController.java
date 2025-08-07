@@ -1,9 +1,9 @@
 package com.example.demo.controller;
 
 import com.example.demo.Service.AuthService;
-import com.example.demo.dto.Login.LoginRequest;
-import com.example.demo.dto.Login.LoginResponse;
-import com.example.demo.dto.UserRegistrationRequest;
+import com.example.demo.model.dto.Login.LoginRequest;
+import com.example.demo.model.dto.Login.LoginResponse;
+import com.example.demo.model.dto.UserRegistrationRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

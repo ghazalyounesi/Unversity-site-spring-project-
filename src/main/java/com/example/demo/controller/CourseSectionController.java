@@ -1,12 +1,12 @@
 package com.example.demo.controller;
 
 import com.example.demo.Service.CourseSectionService;
-import com.example.demo.dto.CreateRequest.CourseSectionCreateDto;
-import com.example.demo.dto.ListDto.CourseSectionListDto;
-import com.example.demo.dto.ListDto.EnrolledStudentDto;
-import com.example.demo.dto.ProfileDto.CourseSectionResponseDto;
-import com.example.demo.dto.Update.CourseSectionUpdateRequestDto;
-import com.example.demo.entity.CourseSection;
+import com.example.demo.model.dto.CreateRequest.CourseSectionCreateDto;
+import com.example.demo.model.dto.ListDto.CourseSectionListDto;
+import com.example.demo.model.dto.ListDto.EnrolledStudentDto;
+import com.example.demo.model.dto.ProfileDto.CourseSectionResponseDto;
+import com.example.demo.model.dto.Update.CourseSectionUpdateRequestDto;
+import com.example.demo.model.entity.CourseSection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

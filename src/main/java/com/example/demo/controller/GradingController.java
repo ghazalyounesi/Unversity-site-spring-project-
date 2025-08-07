@@ -1,9 +1,9 @@
 package com.example.demo.controller;
 
 import com.example.demo.Service.GradingService;
-import com.example.demo.dto.ListDto.BulkGradeRequestDto;
-import com.example.demo.dto.ListDto.GradeEntryDto;
-import com.example.demo.entity.CourseSectionRegistration;
+import com.example.demo.model.dto.ListDto.BulkGradeRequestDto;
+import com.example.demo.model.dto.ListDto.GradeEntryDto;
+import com.example.demo.model.entity.CourseSectionRegistration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

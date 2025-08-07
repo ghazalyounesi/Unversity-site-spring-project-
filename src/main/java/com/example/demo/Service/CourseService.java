@@ -1,8 +1,8 @@
 package com.example.demo.Service;
 
-import com.example.demo.Repasitory.CourseRepository;
-import com.example.demo.dto.ProfileDto.CourseDto;
-import com.example.demo.entity.Course;
+import com.example.demo.Repository.CourseRepository;
+import com.example.demo.model.dto.ProfileDto.CourseDto;
+import com.example.demo.model.entity.Course;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,9 +15,7 @@ public class CourseService {
     private final CourseRepository courseRepository;
 
     public Course createCourse(CourseDto dto) {
-        Course course = new Course();
-        course.setTitle(dto.getTitle());
-        course.setUnits(dto.getUnits());
+        Course course = Course.fromDto(dto);
         return courseRepository.save(course);
     }
 

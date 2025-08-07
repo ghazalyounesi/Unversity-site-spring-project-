@@ -1,13 +1,13 @@
 package com.example.demo.Service;
 
-import com.example.demo.Repasitory.StaffRepository;
-import com.example.demo.Repasitory.UserRepository;
-import com.example.demo.dto.CreateRequest.StaffCreateRequest;
-import com.example.demo.dto.ListDto.staffListDto;
-import com.example.demo.dto.ProfileDto.StaffProfileDto;
-import com.example.demo.dto.Update.StaffUpdateRequest;
-import com.example.demo.entity.Staff;
-import com.example.demo.entity.User;
+import com.example.demo.Repository.StaffRepository;
+import com.example.demo.Repository.UserRepository;
+import com.example.demo.model.dto.CreateRequest.StaffCreateRequest;
+import com.example.demo.model.dto.ListDto.staffListDto;
+import com.example.demo.model.dto.ProfileDto.StaffProfileDto;
+import com.example.demo.model.dto.Update.StaffUpdateRequest;
+import com.example.demo.model.entity.Staff;
+import com.example.demo.model.entity.User;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,9 +34,11 @@ public class StaffService {
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new EntityNotFoundException("User not found with username: " + request.getUsername()));
 
-        Staff staff = new Staff();
-        staff.setUserId(user.getId());
-        staff.setPersonnelld(request.getPersonnelId());
+        Staff staff = Staff.builder()
+                .userId(user.getId())
+                .personnelld(request.getPersonnelId())
+                .build();
+
         Staff savedStaff = staffRepository.save(staff);
 
         user.getRoles().add("STAFF");
@@ -120,11 +122,11 @@ public class StaffService {
     }
 
     private StaffProfileDto mapToProfileDto(Staff staff, User user) {
-        StaffProfileDto dto = new StaffProfileDto();
-        dto.setName(user.getName());
-        dto.setUsername(user.getUsername());
-        dto.setPhone(user.getPhone());
-        dto.setPersonnelId(staff.getPersonnelld());
-        return dto;
+        return StaffProfileDto.builder()
+                .name(user.getName())
+                .username(user.getUsername())
+                .phone(user.getPhone())
+                .personnelId(staff.getPersonnelld())
+                .build();
     }
 }

@@ -1,10 +1,10 @@
 package com.example.demo.controller;
 
 import com.example.demo.Service.StaffService;
-import com.example.demo.dto.CreateRequest.StaffCreateRequest;
-import com.example.demo.dto.ListDto.staffListDto;
-import com.example.demo.dto.ProfileDto.StaffProfileDto;
-import com.example.demo.dto.Update.StaffUpdateRequest;
+import com.example.demo.model.dto.CreateRequest.StaffCreateRequest;
+import com.example.demo.model.dto.ListDto.staffListDto;
+import com.example.demo.model.dto.ProfileDto.StaffProfileDto;
+import com.example.demo.model.dto.Update.StaffUpdateRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;

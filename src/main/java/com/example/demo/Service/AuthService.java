@@ -1,10 +1,10 @@
 package com.example.demo.Service;
 
-import com.example.demo.Repasitory.UserRepository;
-import com.example.demo.dto.Login.LoginRequest;
-import com.example.demo.dto.Login.LoginResponse;
-import com.example.demo.dto.UserRegistrationRequest;
-import com.example.demo.entity.User;
+import com.example.demo.Repository.UserRepository;
+import com.example.demo.model.dto.Login.LoginRequest;
+import com.example.demo.model.dto.Login.LoginResponse;
+import com.example.demo.model.dto.UserRegistrationRequest;
+import com.example.demo.model.entity.User;
 import jakarta.persistence.EntityExistsException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

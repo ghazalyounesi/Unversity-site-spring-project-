@@ -1,8 +1,8 @@
 package com.example.demo.controller;
 
 import com.example.demo.Service.CourseSectionRegistrationService;
-import com.example.demo.dto.CreateRequest.CourseSectionRegistrationRequestDto;
-import com.example.demo.entity.CourseSectionRegistration;
+import com.example.demo.model.dto.CreateRequest.CourseSectionRegistrationRequestDto;
+import com.example.demo.model.entity.CourseSectionRegistration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

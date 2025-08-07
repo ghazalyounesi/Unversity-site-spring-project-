@@ -1,8 +1,8 @@
 package com.example.demo.controller;
 
 import com.example.demo.Service.TermService;
-import com.example.demo.dto.ProfileDto.TermDto;
-import com.example.demo.entity.Term;
+import com.example.demo.model.dto.ProfileDto.TermDto;
+import com.example.demo.model.entity.Term;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
