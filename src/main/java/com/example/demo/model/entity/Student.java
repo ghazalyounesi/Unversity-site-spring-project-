@@ -13,7 +13,7 @@ import java.util.Date;
 @Getter
 
 @Entity
-@Table(name = "student")
+@Table
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +21,7 @@ public class Student {
     @Column(name = "student_id", unique = true)
     private String studentid;
     @Column(nullable = false)
-    private Long userId; // Foreign key to User entity
+    private Long userId;
     @Enumerated(EnumType.STRING)
     @Column(name = "degree")
     private Degree degree;

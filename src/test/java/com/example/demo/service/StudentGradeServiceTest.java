@@ -1,6 +1,8 @@
 package com.example.demo.service;
 
 import com.example.demo.Repository.*;
+import com.example.demo.exception.UserNotFoundCheckedException;
+import com.example.demo.exception.UserNotStudentException;
 import com.example.demo.model.dto.ListDto.CourseGradeDto;
 import com.example.demo.model.dto.ListDto.TermGradesDto;
 import com.example.demo.Service.StudentGradeService;
@@ -53,7 +55,7 @@ class StudentGradeServiceTest {
     }
 
     @Test
-    void testGetTermGrades_returnsCorrectGpaAndCourseList() {
+    void testGetTermGrades_returnsCorrectGpaAndCourseList()throws UserNotFoundCheckedException, UserNotStudentException {
         Long termId = 100L;
         Long studentId = 10L;
         Long userId = 1L;

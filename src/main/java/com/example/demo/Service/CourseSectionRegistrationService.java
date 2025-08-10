@@ -3,12 +3,13 @@ package com.example.demo.Service;
 import com.example.demo.Repository.CourseSectionRegistrationRepository;
 import com.example.demo.Repository.StudentRepository;
 import com.example.demo.Repository.UserRepository;
+import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.exception.StudentAlreadyEnrolledException;
+import com.example.demo.exception.UnauthorizedException;
 import com.example.demo.model.dto.CreateRequest.CourseSectionRegistrationRequestDto;
 import com.example.demo.model.entity.CourseSectionRegistration;
 import com.example.demo.model.entity.Student;
 import com.example.demo.model.entity.User;
-import com.example.demo.exception.ResourceNotFoundException;
-import com.example.demo.exception.UnauthorizedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,7 @@ public class CourseSectionRegistrationService {
     private final StudentRepository studentRepository;
     private final UserRepository userRepository;
 
-    public CourseSectionRegistration createRegistration(CourseSectionRegistrationRequestDto request) {
+    public CourseSectionRegistration createRegistration(CourseSectionRegistrationRequestDto request) throws ResourceNotFoundException, UnauthorizedException, StudentAlreadyEnrolledException {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
         User currentUser = userRepository.findByUsername(username)
@@ -32,7 +33,7 @@ public class CourseSectionRegistrationService {
 
         boolean alreadyEnrolled = registrationRepository.existsByStudentIdAndCourseSectionId(student.getId(), request.getCourseSectionId());
         if (alreadyEnrolled) {
-            throw new IllegalStateException("Student is already enrolled in this course section.");
+            throw new StudentAlreadyEnrolledException("Student is already enrolled in this course section.");
         }
 
         CourseSectionRegistration registration =

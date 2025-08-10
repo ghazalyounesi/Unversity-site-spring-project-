@@ -1,9 +1,9 @@
 package com.example.demo.Service;
 
 import com.example.demo.Repository.CourseRepository;
+import com.example.demo.exception.CourseNotFoundException;
 import com.example.demo.model.dto.ProfileDto.CourseDto;
 import com.example.demo.model.entity.Course;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,12 +23,12 @@ public class CourseService {
         return courseRepository.findAll();
     }
 
-    public Course getCourseById(Long id) {
+    public Course getCourseById(Long id) throws CourseNotFoundException {
         return courseRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Course not found with id: " + id));
+                .orElseThrow(() -> new CourseNotFoundException("Course not found with id: " + id));
     }
 
-    public Course updateCourse(Long id, CourseDto dto) {
+    public Course updateCourse(Long id, CourseDto dto) throws CourseNotFoundException {
         Course existingCourse = getCourseById(id);
         existingCourse.setTitle(dto.getTitle());
         existingCourse.setUnits(dto.getUnits());

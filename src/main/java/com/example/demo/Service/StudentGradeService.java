@@ -10,6 +10,8 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import com.example.demo.exception.UserNotFoundCheckedException;
+import com.example.demo.exception.UserNotStudentException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,12 +28,12 @@ public class StudentGradeService {
     private final CourseRepository courseRepository;
     private final InstructorRepository instructorRepository;
 
-    public TermGradesDto getTermGrades(Long termId) {
+    public TermGradesDto getTermGrades(Long termId) throws UserNotFoundCheckedException, UserNotStudentException {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User currentUser = userRepository.findByUsername(username)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+                .orElseThrow(() -> new UserNotFoundCheckedException("User not found"));
         Student student = studentRepository.findByUserId(currentUser.getId())
-                .orElseThrow(() -> new IllegalStateException("Current user is not a student"));
+                .orElseThrow(() -> new UserNotStudentException("Current user is not a student"));
 
         List<Long> sectionIdsInTerm = courseSectionRepository.findAllByTermId(termId).stream()
                 .map(CourseSection::getId)
@@ -68,12 +70,12 @@ public class StudentGradeService {
         return new TermGradesDto(termGpa, courseGrades);
     }
 
-    public AcademicSummaryDto getAcademicSummary() {
+    public AcademicSummaryDto getAcademicSummary() throws UserNotFoundCheckedException, UserNotStudentException{
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User currentUser = userRepository.findByUsername(username)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+                .orElseThrow(() -> new UserNotFoundCheckedException("User not found"));
         Student student = studentRepository.findByUserId(currentUser.getId())
-                .orElseThrow(() -> new IllegalStateException("Current user is not a student"));
+                .orElseThrow(() -> new UserNotStudentException("Current user is not a student"));
 
         List<TermSummaryDto> termSummaries = registrationRepository.findTermGpaSummaryByStudentId(student.getId());
 

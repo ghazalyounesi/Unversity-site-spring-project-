@@ -12,6 +12,9 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.example.demo.exception.UserNotFoundCheckedException;
+import com.example.demo.exception.AssociatedUserNotFoundException;
+import com.example.demo.exception.StaffNotFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,9 +33,10 @@ public class StaffService {
     }
 
     @Transactional
-    public StaffProfileDto createStaff(StaffCreateRequest request) {
+    public StaffProfileDto createStaff(StaffCreateRequest request) throws UserNotFoundCheckedException{
         User user = userRepository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new EntityNotFoundException("User not found with username: " + request.getUsername()));
+                .orElseThrow(() -> new UserNotFoundCheckedException(
+                        "User not found with username: " + request.getUsername()));
 
         Staff staff = Staff.builder()
                 .userId(user.getId())
@@ -49,12 +53,13 @@ public class StaffService {
     }
 
     @Transactional
-    public StaffProfileDto updateStaff(Long id, StaffUpdateRequest request) {
+    public StaffProfileDto updateStaff(Long id, StaffUpdateRequest request)throws StaffNotFoundException, AssociatedUserNotFoundException {
         Staff staff = staffRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Staff not found with id: " + id));
+                .orElseThrow(() -> new StaffNotFoundException("Staff not found with id: " + id));
 
         User user = userRepository.findById(staff.getUserId())
-                .orElseThrow(() -> new EntityNotFoundException("Associated user not found for staff id: " + staff.getId()));
+                .orElseThrow(() -> new AssociatedUserNotFoundException(
+                        "Associated user not found for staff id: " + staff.getId()));
 
         if (request.getName() != null && !request.getName().isEmpty()) {
             user.setName(request.getName());
@@ -72,22 +77,26 @@ public class StaffService {
     }
 
     @Transactional(readOnly = true)
-    public List<StaffProfileDto> getAllStaff() {
+    public List<StaffProfileDto> getAllStaff() throws AssociatedUserNotFoundException {
         return staffRepository.findAll().stream()
                 .map(staff -> {
                     User user = userRepository.findById(staff.getUserId())
-                            .orElseThrow(() -> new EntityNotFoundException("Associated user not found for staff id: " + staff.getId()));
+                            .orElseThrow(() -> new RuntimeException(
+                                    new AssociatedUserNotFoundException(
+                                            "Associated user not found for staff id: " + staff.getId())));
                     return mapToProfileDto(staff, user);
                 })
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public List<staffListDto> getStaffList() {
+    public List<staffListDto> getStaffList() throws UserNotFoundCheckedException {
         return staffRepository.findAll().stream()
                 .map(staff -> {
                     User user = userRepository.findById(staff.getUserId())
-                            .orElseThrow(() -> new EntityNotFoundException("User not found for staff id: " + staff.getId()));
+                            .orElseThrow(() -> new RuntimeException(
+                                    new UserNotFoundCheckedException(
+                                            "User not found for staff id: " + staff.getId())));
                     return new staffListDto(staff.getId(), user.getName(), staff.getPersonnelld());
                 })
                 .collect(Collectors.toList());
@@ -95,11 +104,12 @@ public class StaffService {
     }
 
     @Transactional(readOnly = true)
-    public StaffProfileDto getStaffById(Long id) {
+    public StaffProfileDto getStaffById(Long id) throws StaffNotFoundException, AssociatedUserNotFoundException {
         Staff staff = staffRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("staff not found with id: " + id));
+                .orElseThrow(() -> new StaffNotFoundException("staff not found with id: " + id));
         User user = userRepository.findById(staff.getUserId())
-                .orElseThrow(() -> new EntityNotFoundException("Associated user not found for staff id: " + staff.getId()));
+                .orElseThrow(() -> new AssociatedUserNotFoundException(
+                        "Associated user not found for staff id: " + staff.getId()));
         return mapToProfileDto(staff, user);
 
     }

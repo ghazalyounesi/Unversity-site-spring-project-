@@ -1,6 +1,9 @@
 package com.example.demo.controller;
 
 import com.example.demo.Service.CourseSectionRegistrationService;
+import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.exception.StudentAlreadyEnrolledException;
+import com.example.demo.exception.UnauthorizedException;
 import com.example.demo.model.dto.CreateRequest.CourseSectionRegistrationRequestDto;
 import com.example.demo.model.entity.CourseSectionRegistration;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +23,7 @@ public class CourseSectionRegistrationController {
 
     @PostMapping
     @PreAuthorize("hasRole('STUDENT')")
-    public ResponseEntity<CourseSectionRegistration> registerForCourse(@RequestBody CourseSectionRegistrationRequestDto request) {
+    public ResponseEntity<CourseSectionRegistration> registerForCourse(@RequestBody CourseSectionRegistrationRequestDto request) throws ResourceNotFoundException, UnauthorizedException, StudentAlreadyEnrolledException {
         CourseSectionRegistration registration = registrationService.createRegistration(request);
         return ResponseEntity.ok(registration);
     }

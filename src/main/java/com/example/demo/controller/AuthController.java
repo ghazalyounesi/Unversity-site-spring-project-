@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.Service.AuthService;
+import com.example.demo.exception.UserNotFoundCheckedException;
 import com.example.demo.model.dto.Login.LoginRequest;
 import com.example.demo.model.dto.Login.LoginResponse;
 import com.example.demo.model.dto.UserRegistrationRequest;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.example.demo.exception.EntityAlreadyExistsException;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -21,13 +23,13 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody UserRegistrationRequest request) {
+    public ResponseEntity<String> registerUser(@RequestBody UserRegistrationRequest request)throws EntityAlreadyExistsException {
         authService.registerUser(request);
         return ResponseEntity.ok("User registered successfully. Account is inactive.");
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginRequest request) {
+    public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginRequest request)throws UserNotFoundCheckedException {
         LoginResponse response = authService.loginUser(request);
         return ResponseEntity.ok(response);
     }

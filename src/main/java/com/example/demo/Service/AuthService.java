@@ -1,11 +1,12 @@
 package com.example.demo.Service;
 
 import com.example.demo.Repository.UserRepository;
+import com.example.demo.exception.EntityAlreadyExistsException;
+import com.example.demo.exception.UserNotFoundCheckedException;
 import com.example.demo.model.dto.Login.LoginRequest;
 import com.example.demo.model.dto.Login.LoginResponse;
 import com.example.demo.model.dto.UserRegistrationRequest;
 import com.example.demo.model.entity.User;
-import jakarta.persistence.EntityExistsException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,12 +31,12 @@ public class AuthService {
     }
 
     @Transactional
-    public void registerUser(UserRegistrationRequest request) {
+    public void registerUser(UserRegistrationRequest request) throws EntityAlreadyExistsException {
         if (userRepository.findByUsername(request.getUsername()).isPresent()) {
-            throw new EntityExistsException("Username already taken: " + request.getUsername());
+            throw new EntityAlreadyExistsException("Username already taken: " + request.getUsername());
         }
         if (userRepository.findByPhone(request.getPhone()).isPresent()) {
-            throw new EntityExistsException("Phone number already taken: " + request.getPhone());
+            throw new EntityAlreadyExistsException("Phone number already taken: " + request.getPhone());
         }
 
         User user = User.builder()
@@ -51,7 +52,7 @@ public class AuthService {
 
     }
 
-    public LoginResponse loginUser(LoginRequest request) {
+    public LoginResponse loginUser(LoginRequest request) throws UserNotFoundCheckedException {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getUsername(),
@@ -60,7 +61,7 @@ public class AuthService {
         );
 
         var user = userRepository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("User not found"));
+                .orElseThrow(() -> new UserNotFoundCheckedException("User not found"));
         String jwtToken = jwtService.generateToken(user);
 
         return new LoginResponse(jwtToken, user.getUsername());

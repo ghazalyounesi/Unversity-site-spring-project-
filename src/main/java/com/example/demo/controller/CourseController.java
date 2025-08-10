@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import com.example.demo.exception.CourseNotFoundException;
 
 import java.util.List;
 
@@ -31,13 +32,13 @@ public class CourseController {
 
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Course> getCourseById(@PathVariable Long id) {
+    public ResponseEntity<Course> getCourseById(@PathVariable Long id) throws CourseNotFoundException  {
         return ResponseEntity.ok(courseService.getCourseById(id));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
-    public ResponseEntity<Course> updateCourse(@PathVariable Long id, @RequestBody CourseDto dto) {
+    public ResponseEntity<Course> updateCourse(@PathVariable Long id, @RequestBody CourseDto dto) throws CourseNotFoundException {
         return ResponseEntity.ok(courseService.updateCourse(id, dto));
     }
 

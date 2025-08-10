@@ -8,6 +8,9 @@ import com.example.demo.model.dto.Update.StaffUpdateRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import com.example.demo.exception.UserNotFoundCheckedException;
+import com.example.demo.exception.AssociatedUserNotFoundException;
+import com.example.demo.exception.StaffNotFoundException;
 
 import java.util.List;
 
@@ -23,31 +26,31 @@ public class StaffController {
     }
 
     @PostMapping
-    public ResponseEntity<StaffProfileDto> createStaff(@RequestBody StaffCreateRequest request) {
+    public ResponseEntity<StaffProfileDto> createStaff(@RequestBody StaffCreateRequest request) throws UserNotFoundCheckedException{
         StaffProfileDto newStaff = staffService.createStaff(request);
         return ResponseEntity.ok(newStaff);
     }
 
     @GetMapping("/read")
-    public ResponseEntity<List<StaffProfileDto>> getAllStaff() {
+    public ResponseEntity<List<StaffProfileDto>> getAllStaff() throws AssociatedUserNotFoundException {
         List<StaffProfileDto> staffList = staffService.getAllStaff();
         return ResponseEntity.ok(staffList);
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<staffListDto>> listStudents() {
+    public ResponseEntity<List<staffListDto>> listStudents()throws UserNotFoundCheckedException {
         List<staffListDto> staffList = staffService.getStaffList();
         return ResponseEntity.ok(staffList);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<StaffProfileDto> getStaffById(@PathVariable Long id) {
+    public ResponseEntity<StaffProfileDto> getStaffById(@PathVariable Long id)throws StaffNotFoundException, AssociatedUserNotFoundException {
         StaffProfileDto student = staffService.getStaffById(id);
         return ResponseEntity.ok(student);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<StaffProfileDto> updateStaff(@PathVariable Long id, @RequestBody StaffUpdateRequest request) {
+    public ResponseEntity<StaffProfileDto> updateStaff(@PathVariable Long id, @RequestBody StaffUpdateRequest request)throws StaffNotFoundException, AssociatedUserNotFoundException {
         StaffProfileDto updatedStaff = staffService.updateStaff(id, request);
         return ResponseEntity.ok(updatedStaff);
     }

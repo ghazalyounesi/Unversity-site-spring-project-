@@ -2,6 +2,7 @@ package com.example.demo.Service;
 
 import com.example.demo.Repository.InstructorRepository;
 import com.example.demo.Repository.UserRepository;
+import com.example.demo.exception.UserNotFoundCheckedException;
 import com.example.demo.model.dto.CreateRequest.InstructorCreateRequest;
 import com.example.demo.model.dto.ListDto.InstructorListDto;
 import com.example.demo.model.dto.ProfileDto.InstructorProfileDto;
@@ -30,9 +31,10 @@ public class InstructorService {
     }
 
     @Transactional
-    public InstructorProfileDto createInstructor(InstructorCreateRequest request) {
+    public InstructorProfileDto createInstructor(InstructorCreateRequest request) throws UserNotFoundCheckedException {
         User user = userRepository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new EntityNotFoundException("User not found with username: " + request.getUsername()));
+                .orElseThrow(() -> new UserNotFoundCheckedException(
+                        "User not found with username: " + request.getUsername()));
         Instructor instructor = Instructor.builder()
                 .userId(user.getId())
                 .rank(request.getRank())

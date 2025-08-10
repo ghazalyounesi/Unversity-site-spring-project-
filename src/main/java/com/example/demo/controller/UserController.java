@@ -4,7 +4,8 @@ import com.example.demo.Service.UserService;
 import com.example.demo.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
+import com.example.demo.exception.UserNotFoundException;
+import com.example.demo.exception.UserAlreadyExistsException;
 import java.util.List;
 
 @RestController
@@ -24,19 +25,19 @@ public class UserController {
     }
 
     @PostMapping
-    public void registerUser(@RequestBody User user) {
+    public void registerUser(@RequestBody User user)throws UserAlreadyExistsException {
         userService.addNewUser(user);
 
     }
 
     @DeleteMapping
-    public void deleteUser(@RequestBody Long Id) {
+    public void deleteUser(@RequestBody Long Id) throws UserNotFoundException{
         userService.deleteUsrer(Id);
 
     }
 
     @PutMapping(path = "{userId}")
-    public void updateUser(@PathVariable("userId") Long id, @RequestBody User user) {
+    public void updateUser(@PathVariable("userId") Long id, @RequestBody User user)throws UserNotFoundException {
 
         userService.updateuser(id, user);
     }

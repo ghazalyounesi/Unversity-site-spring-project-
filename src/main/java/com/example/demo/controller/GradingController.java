@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import com.example.demo.exception.StudentNotEnrolledException;
 
 @RestController
 @RequestMapping("/api/v1/course-sections/{courseSectionId}/grades")
@@ -18,9 +19,9 @@ public class GradingController {
 
     @PostMapping
     @PreAuthorize("hasRole('INSTRUCTOR') and @courseSectionSecurityService.isOwner(authentication, #courseSectionId)")
-    public ResponseEntity<CourseSectionRegistration> gradeStudent(
+    public ResponseEntity<CourseSectionRegistration> gradeStudent (
             @PathVariable Long courseSectionId,
-            @RequestBody GradeEntryDto gradeDto) {
+            @RequestBody GradeEntryDto gradeDto) throws StudentNotEnrolledException{
 
         CourseSectionRegistration updatedRegistration = gradingService.gradeStudent(
                 courseSectionId,

@@ -1,6 +1,10 @@
 package com.example.demo.Service;
 
 import com.example.demo.Repository.*;
+import com.example.demo.exception.CourseSectionDeletionException;
+import com.example.demo.exception.InvalidCourseSectionDataException;
+import com.example.demo.exception.UserNotFoundCheckedException;
+import com.example.demo.exception.UserNotInstructorException;
 import com.example.demo.model.dto.CreateRequest.CourseSectionCreateDto;
 import com.example.demo.model.dto.ListDto.CourseSectionListDto;
 import com.example.demo.model.dto.ListDto.EnrolledStudentDto;
@@ -11,14 +15,12 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
 
 @Service
 @RequiredArgsConstructor
@@ -32,17 +34,18 @@ public class CourseSectionService {
     private final UserRepository userRepository;
     private final StudentRepository studentRepository;
 
-    public CourseSection createCourseSection(CourseSectionCreateDto dto) {
+    public CourseSection createCourseSection(CourseSectionCreateDto dto)
+            throws UserNotFoundCheckedException, UserNotInstructorException, InvalidCourseSectionDataException {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
         User currentUser = userRepository.findByUsername(username)
-                .orElseThrow(() -> new EntityNotFoundException("User not found with username: " + username));
+                .orElseThrow(() -> new UserNotFoundCheckedException("User not found with username: " + username));
 
         Instructor instructor = instructorRepository.findByUserId(currentUser.getId())
-                .orElseThrow(() -> new AccessDeniedException("Current user is not an instructor"));
+                .orElseThrow(() -> new UserNotInstructorException("Current user is not an instructor"));
 
         if (dto.getTermId() == null || dto.getCourseId() == null) {
-            throw new IllegalArgumentException("Term ID and Course ID must not be null");
+            throw new InvalidCourseSectionDataException("Term ID and Course ID must not be null");
         }
 
         CourseSection section = CourseSection.builder()
@@ -65,10 +68,11 @@ public class CourseSectionService {
     }
 
     @Transactional
-    public void deleteCourseSection(Long id) {
+    public void deleteCourseSection(Long id) throws CourseSectionDeletionException {
         int deletedCount = courseSectionRepository.deleteCourseSectionIfNoRegistrations(id);
         if (deletedCount == 0) {
-            throw new IllegalStateException("Cannot delete course section with registered students or it does not exist.");
+            throw new CourseSectionDeletionException(
+                    "Cannot delete course section with registered students or it does not exist.");
         }
     }
 

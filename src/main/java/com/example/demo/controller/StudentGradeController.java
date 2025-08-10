@@ -1,6 +1,8 @@
 package com.example.demo.controller;
 
 import com.example.demo.Service.StudentGradeService;
+import com.example.demo.exception.UserNotFoundCheckedException;
+import com.example.demo.exception.UserNotStudentException;
 import com.example.demo.model.dto.ListDto.AcademicSummaryDto;
 import com.example.demo.model.dto.ListDto.TermGradesDto;
 import lombok.RequiredArgsConstructor;
@@ -20,13 +22,13 @@ public class StudentGradeController {
 
     @GetMapping("/summary")
     @PreAuthorize("hasRole('STUDENT')")
-    public ResponseEntity<AcademicSummaryDto> getAcademicSummary() {
+    public ResponseEntity<AcademicSummaryDto> getAcademicSummary() throws UserNotFoundCheckedException, UserNotStudentException {
         return ResponseEntity.ok(studentGradeService.getAcademicSummary());
     }
 
     @GetMapping("/term/{termId}")
     @PreAuthorize("hasRole('STUDENT')")
-    public ResponseEntity<TermGradesDto> getGradesForTerm(@PathVariable Long termId) {
+    public ResponseEntity<TermGradesDto> getGradesForTerm(@PathVariable Long termId)throws UserNotFoundCheckedException, UserNotStudentException {
         return ResponseEntity.ok(studentGradeService.getTermGrades(termId));
     }
 }

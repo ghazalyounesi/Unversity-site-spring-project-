@@ -8,6 +8,7 @@ import com.example.demo.model.dto.Update.InstructorUpdateRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import com.example.demo.exception.UserNotFoundCheckedException;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class InstructorController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
-    public ResponseEntity<InstructorProfileDto> createInstructor(@RequestBody InstructorCreateRequest request) {
+    public ResponseEntity<InstructorProfileDto> createInstructor(@RequestBody InstructorCreateRequest request)throws UserNotFoundCheckedException {
         InstructorProfileDto newInstructor = instructorService.createInstructor(request);
         return ResponseEntity.ok(newInstructor);
     }
